@@ -1,5 +1,5 @@
 {
-  "name": "reactexpress",
+  "name": "GitHub-Blog",
   "version": "1.0.0",
   "description": "Starter kit for creating React and Express apps",
   "main": "server.js",
@@ -16,7 +16,9 @@
     "nodemon": "^1.14.6"
   },
   "dependencies": {
+    "bootstrap": "^4.5.0",
     "concurrently": "^3.5.1",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "react-bootstrap": "^1.0.1"
   }
 }
