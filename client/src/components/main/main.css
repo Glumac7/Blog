@@ -10,3 +10,11 @@ li{
   line-height: 2rem;
   border-bottom: 1px dotted #777;
 }
+
+#main {
+  padding: 20px;
+}
+
+#main #main-container {
+  background-color: #fff;
+}

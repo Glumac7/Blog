@@ -1,6 +1,47 @@
 const express = require('express');
-
+const mongoose = require('mongoose');
+const Blog = require('./models/blog');
 const app = express();
+
+//connect to mongoDB
+const dbURI = 'mongodb+srv://glumac:test123@cluster0-xsmdw.mongodb.net/blogDb?retryWrites=true&w=majority';
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    const port = 5000;
+
+    app.listen(port, () => `Server running on port ${port}`);
+
+    console.log("connected to the database!");
+  })
+  .catch((err) => {console.log(err);
+  });
+
+app.get('/add-blog', (req, res) => {
+  const blog = new Blog({
+    title: 'new blog 2',
+    snippet: 'about my new blog',
+    body: 'more about my great blog'
+  })
+
+  blog.save()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+})
+
+app.get('/all-blogs', (req, res) => {
+  Blog.find()
+    .then(result => {
+      res.send(result)
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+})
+
 
 app.get('/api/customers', (req, res) => {
   const customers = [
@@ -11,7 +52,3 @@ app.get('/api/customers', (req, res) => {
 
   res.json(customers);
 });
-
-const port = 5000;
-
-app.listen(port, () => `Server running on port ${port}`);
