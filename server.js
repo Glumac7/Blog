@@ -3,8 +3,17 @@ const mongoose = require('mongoose');
 const Blog = require('./models/blog');
 const app = express();
 
+app.use(express.urlencoded({  extended: true  }));
+
+//Used this to authorize communication between two ports
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 //connect to mongoDB
 const dbURI = 'mongodb+srv://glumac:test123@cluster0-xsmdw.mongodb.net/blogDb?retryWrites=true&w=majority';
+
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     const port = 5000;
@@ -16,7 +25,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .catch((err) => {console.log(err);
   });
 
-app.get('/add-blog', (req, res) => {
+/*app.get('/add-blog', (req, res) => {
   const blog = new Blog({
     title: 'new blog 2',
     snippet: 'about my new blog',
@@ -26,6 +35,17 @@ app.get('/add-blog', (req, res) => {
   blog.save()
     .then((result) => {
       res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+})*/
+
+app.post('/blogs', (req, res) => {
+  const blog = new Blog(req.body);
+  blog.save()
+    .then(result => {
+      res.redirect('http://localhost:3000');
     })
     .catch((err) => {
       console.log(err);
@@ -42,7 +62,7 @@ app.get('/all-blogs', (req, res) => {
     });
 })
 
-
+/*
 app.get('/api/customers', (req, res) => {
   const customers = [
     {id: 1, firstName: 'John', lastName: 'Doe'},
@@ -51,4 +71,4 @@ app.get('/api/customers', (req, res) => {
   ];
 
   res.json(customers);
-});
+});*/
