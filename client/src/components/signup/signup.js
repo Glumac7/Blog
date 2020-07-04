@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './signup.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -6,8 +6,6 @@ import Container from 'react-bootstrap/Container';
 
 const Signup = () => {
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [token, setToken] = useState('');
     const [signUpError, setSignUpError] = useState('');
     const [signUpFirstName, setSignUpFirstName] = useState('');
     const [signUpLastName, setSignUpLastName] = useState('');
@@ -39,8 +37,6 @@ const Signup = () => {
 
     function onSignUp(e) {
         e.preventDefault();
-
-        setIsLoading(true);
     
         // Post request to backend
         fetch('/signup', {
@@ -59,7 +55,6 @@ const Signup = () => {
           .then(json => {
 
             setSignUpError(json.message);
-            setIsLoading(false);
 
             if(json.success) 
             {
