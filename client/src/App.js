@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/header/header';
 import Footer from './components/footer/footer';
 import Main from './components/main/main';
@@ -16,6 +16,7 @@ const App = () => {
  
   const [logInEmail, setLogInEmail] = useState('');
   const [token, setToken] = useState('');
+  const [pathName, setPathName] = useState('');
   const [logInError, setLogInError] = useState('');
   const [logInPassword, setLogInPassword] = useState('');
 
@@ -36,12 +37,19 @@ const App = () => {
       }
   }
 
+  useEffect(() => {
+    if(logInError === "Logged In")
+    {
+        setPathName('/');
+    }
+  },[logInError])
+
   function onLogIn(e) {
 
     e.preventDefault();
 
     // Post request to backend
-    fetch('/login', {
+    fetch('http://localhost:5000/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -61,9 +69,10 @@ const App = () => {
         if (json.success) 
         {
             setInStorage('user', { token: json.token });
-            setLogInPassword('');
+           
+            /*setLogInPassword('');
             setLogInEmail('');
-            setToken(json.token);
+            setToken(json.token);*/
         }
 
     });
@@ -84,10 +93,10 @@ const App = () => {
 
           <Switch>
               <Route exact path="/">
-                  <Main />
+                  <Main pathName={pathName} />
               </Route>
               <Route path="/login">
-                  <Login onLogIn={onLogIn} handelChange={handelChange} logInError={logInError}/>
+                  <Login pathName={pathName} onLogIn={onLogIn} handelChange={handelChange} />
               </Route>
               <Route path="/signup">
                   <Signup />

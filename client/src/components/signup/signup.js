@@ -3,6 +3,7 @@ import './signup.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
+import { useHistory } from 'react-router-dom';
 
 const Signup = () => {
 
@@ -11,6 +12,13 @@ const Signup = () => {
     const [signUpLastName, setSignUpLastName] = useState('');
     const [signUpEmail, setSignUpEmail] = useState('');
     const [signUpPassword, setSignUpPassword] = useState('');
+
+    (function IFFE() {
+        if(localStorage.getItem('user'))
+        {
+            useHistory().push('/');
+        }
+    }())
 
     function handelChange (event)
     {
