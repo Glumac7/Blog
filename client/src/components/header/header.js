@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { getFromStorage } from '../storage';
+import { Redirect } from 'react-router-dom';
 
 const Header = (props) => {
     
@@ -51,6 +52,7 @@ const Header = (props) => {
                     <Nav className="ml-auto">
                         <Link className="nav-link" to="/login">Login</Link>
                         <Link className="nav-link" to="/signup">Signup</Link>
+                        <Redirect to='/login' />
                     </Nav> 
                 )}
                 

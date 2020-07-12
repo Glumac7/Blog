@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { useHistory, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import './main.css';
 
@@ -12,51 +12,44 @@ const Main = (props) => {
     
     const [customers, setCustomers] =  useState([]);
     const [filter, setFilter] =  useState(null);
-    const {pathName} = props;
+    const {toMain} = props;
 
-    (function IIFE(){
-        const history = useHistory();
-
-        if(!localStorage.getItem('user'))
-        {
-            history.push('/login');
-        }
-    }())
-
-    if(pathName === '/')
+    if(toMain !== "Logged in" && !localStorage.getItem('user'))
     {
         return <Redirect to={'/login'} />
     }
     else
     {
-            function handelSearch(event) {
-                const {value} = event.target;
-                setFilter(value);
+        function handelSearch(event) {
+            const {value} = event.target;
+            setFilter(value);
+        }
+    
+        const blog = customers.filter(data => {
+            if(filter == null) 
+            {
+                return data;
             }
-        
-            const blog = customers.filter(data => {
-                if(filter == null) 
-                {
-                    return data;
-                }
-                else if(data.title.toLowerCase().includes(filter.toLowerCase())){
-                    return data;
-                }
-                else return 0;
-            }).map(item => <div id="individual-blog" key={item._id}>
-                              <h1>{item.title}</h1>
-                              <h5>{item.snippet}</h5>
-                              <p>{item.body}</p>
-                              <br/>
-                            </div>);
-        
-        
-            useEffect(() => {
-              fetch(`http://localhost:5000/all-blogs`)
-                  .then(res => res.json())
-                  .then(item => setCustomers(item));
-                    
-            }, []);
+            else if(data.title.toLowerCase().includes(filter.toLowerCase())){
+                return data;
+            }
+            else return 0;
+        }).map(item => <div id="individual-blog" key={item._id}>
+                            <h1>{item.title}</h1>
+                            <h5>{item.snippet}</h5>
+                            <p>{item.body}</p>
+                            <br/>
+                        </div>);
+    
+    
+        useEffect(() => {
+            fetch(`http://localhost:5000/all-blogs`)
+                .then(res => res.json())
+                .then(item => setCustomers(item))
+                .catch(err => {
+                    console.log(err);
+                })                    
+        }, []);
 
         return (
             <Container id="main">

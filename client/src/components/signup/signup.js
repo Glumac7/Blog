@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './signup.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Redirect } from 'react-router-dom';
 
 const Signup = () => {
 
@@ -19,6 +19,10 @@ const Signup = () => {
             useHistory().push('/');
         }
     }())
+
+    useEffect(() => {
+
+    }, [])
 
     function handelChange (event)
     {
@@ -60,19 +64,7 @@ const Signup = () => {
           })
         })
           .then(res => res.json())
-          .then(json => {
-
-            setSignUpError(json.message);
-
-            if(json.success) 
-            {
-                setSignUpFirstName('');
-                setSignUpLastName('');
-                setSignUpEmail('');
-                setSignUpPassword('');
-            }
-
-          });
+          .then(json => { setSignUpError(json.message); });
     }
 
     return (
@@ -81,7 +73,7 @@ const Signup = () => {
                 <Form onSubmit={onSignUp} >
                     <h1>
                         {
-                            (signUpError) ? signUpError : (null)
+                            (signUpError == "Signed up") ? <Redirect to={'/login'} /> : (signUpError) ? signUpError : null
                         }
                     </h1>
 

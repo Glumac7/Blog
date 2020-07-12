@@ -1,24 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './login.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect } from "react-router-dom";
+import { setInStorage } from '../storage';
 
 const Login = (props) => {
 
-    const {onLogIn, handelChange, logInError, pathName} = props;
+    const {funcToMain} = props;
+    const [logInEmail, setLogInEmail] = useState('');
+    const [logInError, setLogInError] = useState(true);
+    const [logInPassword, setLogInPassword] = useState('');        
 
-    (function IFFE() {
-        if(localStorage.getItem('user'))
-        {
-            useHistory().push('/');
-        }
-    }())
-
-    if(pathName === '/')
+    function handelChange (event)
     {
-        return <Redirect to={pathName} />
+        const {name, value} = event.target;
+
+        switch (name) {
+
+            case "email":
+                setLogInEmail(value);
+                break;
+            case "password":
+                setLogInPassword(value);
+                break;
+            default:
+                break;
+        }
+    }
+  
+    function onLogIn(e) {
+        
+        e.preventDefault();
+        
+        // Post request to backend
+        fetch('http://localhost:5000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: logInEmail,
+                password: logInPassword,
+            }),
+        })
+        .then(res => res.json())
+        .then(json => {
+
+            if (json.success) 
+            {
+            setInStorage('user', { token: json.token });
+            setLogInError(false);
+            funcToMain("Logged in");
+            }
+            
+        });
+    }
+
+    if(!logInError || localStorage.getItem('user'))
+    {
+        return <Redirect to={'/'} />
     }
     else
     {
@@ -27,11 +69,6 @@ const Login = (props) => {
                 <Container>
                     
                         <Form onSubmit={onLogIn}>
-                            <h1>
-                                {
-                                    logInError ? logInError : null
-                                }
-                            </h1>
                             <Form.Group controlId="formBasicEmail">
                                 <Form.Label>Email address</Form.Label>
                                 <Form.Control name="email" onChange={handelChange} type="email" placeholder="Enter email" />
