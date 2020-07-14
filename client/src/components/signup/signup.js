@@ -73,7 +73,7 @@ const Signup = () => {
                 <Form onSubmit={onSignUp} >
                     <h1>
                         {
-                            (signUpError == "Signed up") ? <Redirect to={'/login'} /> : (signUpError) ? signUpError : null
+                            (signUpError === "Signed up") ? <Redirect to={'/login'} /> : (signUpError) ? signUpError : null
                         }
                     </h1>
 
@@ -97,9 +97,6 @@ const Signup = () => {
                     <Form.Group controlId="formBasicPassword">
                         <Form.Label>Password</Form.Label>
                         <Form.Control name="password" value={signUpPassword} onChange={handelChange} type="password" placeholder="Password" />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="Remember me" />
                     </Form.Group>
                     <Button variant="primary" type="submit">
                         Signup

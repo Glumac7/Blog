@@ -91,6 +91,7 @@ app.post('/signup', (req, res, next) => {
     const newUser = new User();
 
     newUser.email = email;
+    newUser.blogs = [];
     newUser.firstName = firstName;
     newUser.lastName = lastName;
     newUser.password = newUser.generateHash(password);
@@ -124,6 +125,7 @@ app.post('/login', (req, res, next) => {
         message: 'Error: Email cannot be blank.'
       });
     }
+    //add a blog post to a logged in user using it's schema in the all-blogs route
     if (!password) 
     {
       return res.send({
@@ -220,33 +222,75 @@ app.get('/logout', (req, res, next) => {
 });
 
 app.post('/blogs', (req, res) => {
-  const blog = new Blog(req.body);
+
+  const token = req.body.token;
+
+  //find the userSession using the localStorage that is stored
+  //in the token variable
+  UserSession.find({_id: token}, (err, prevUser) => {
+    //find the user using the userSession object
+    User.find({
+      _id: prevUser[0].userId
+    }, (err, prevUser) => {
+      //get blogs from the user
+      let {blogs} = prevUser[0];
+      //add the blog that user enterd to them
+      blogs.push(req.body);
+      //copy the whole user
+      let newPrevUser = prevUser[0];
+      //add the new blog to the old ones
+      newPrevUser.blogs = blogs;
+      //update the user
+      newPrevUser.save();
+
+      res.send({"success": "true"})
+
+    })
+  })
+  
+  /*const newUser = new User(req.body);
+
+  newUser.blogs += req.body;
+
+  newUser.save();*/
+  /*const blog = new Blog(req.body);
+  
   blog.save()
     .then(result => {
+      
       res.redirect('http://localhost:3000');
     })
     .catch((err) => {
       console.log(err);
-    });
+    });*/
+})
+let token;
+
+app.post('/all-blogs', (req, res) => {
+  token = req.body.token;
+  res.send("GOOD!!").status(200)
 })
 
 app.get('/all-blogs', (req, res) => {
-  Blog.find()
+
+  //pass a localStorage token to /all-blogs
+  
+  //find the userSession using the localStorage that is stored
+  //in the token variable
+  UserSession.find({_id: token}, (err, prevUser) => {
+    //find the user using the userSession object
+    User.find({
+      _id: prevUser[0].userId
+    }, (err, prevUser) => {
+      res.send(prevUser[0].blogs)
+    });
+  })
+
+  /*Blog.find()
     .then(result => {
       res.send(result)
     })
     .catch((err) => {
       console.log(err);
-    });
+    });*/
 })
-
-/*
-app.get('/api/customers', (req, res) => {
-  const customers = [
-    {id: 1, firstName: 'John', lastName: 'Doe'},
-    {id: 2, firstName: 'Brad', lastName: 'Traversy'},
-    {id: 3, firstName: 'Mary', lastName: 'Swanson'},
-  ];
-
-  res.json(customers);
-});*/
