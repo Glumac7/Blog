@@ -15,7 +15,7 @@ const Main = (props) => {
     const [title, setTitle] = useState('');
     const [snippet, setSnippet] = useState('');
     const [body, setBody] = useState('');
-    const {token} = JSON.parse(localStorage.getItem('user'));
+    const {token} = JSON.parse(localStorage.getItem('user')) || "";
     const {toMain} = props;
 
     if(toMain !== "Logged in" && !localStorage.getItem('user'))
