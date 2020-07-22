@@ -1,0 +1,11 @@
+#signup .container {
+    background-color: #fff;
+    padding: 0;
+}
+
+#signup form {
+    margin: 0 auto;
+    width: 55%;
+    padding: 30px;
+}
+/*bootstrap icons*/

@@ -1,0 +1,10 @@
+#login .container {
+    background-color: #fff;
+    padding: 0;
+}
+
+#login form {
+    margin: 0 auto;
+    width: 55%;
+    padding: 30px;
+}
