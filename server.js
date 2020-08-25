@@ -14,7 +14,6 @@ app.use(cors())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
 //connect to mongoDB
 const dbURI = 'mongodb+srv://glumac:test123@cluster0-xsmdw.mongodb.net/blogDb?retryWrites=true&w=majority';
 
@@ -28,22 +27,6 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   })
   .catch((err) => {console.log(err);
   });
-
-/*app.get('/add-blog', (req, res) => {
-  const blog = new Blog({
-    title: 'new blog 2',
-    snippet: 'about my new blog',
-    body: 'more about my great blog'
-  })
-
-  blog.save()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-})*/
 
 app.post('/signup', (req, res, next) => {
   const { body } = req;
@@ -232,43 +215,60 @@ app.post('/blogs', (req, res) => {
     User.find({
       _id: prevUser[0].userId
     }, (err, prevUser) => {
+
       //get blogs from the user
       let {blogs} = prevUser[0];
-      //add the blog that user enterd to them
+      //add the blog that user entered to them
       blogs.push(req.body);
       //copy the whole user
       let newPrevUser = prevUser[0];
       //add the new blog to the old ones
       newPrevUser.blogs = blogs;
+
       //update the user
       newPrevUser.save();
 
-      res.send({"success": "true"})
+      res.send({"success": "true", "id": req.body.id})
 
     })
   })
-  
-  /*const newUser = new User(req.body);
-
-  newUser.blogs += req.body;
-
-  newUser.save();*/
-  /*const blog = new Blog(req.body);
-  
-  blog.save()
-    .then(result => {
-      
-      res.redirect('http://localhost:3000');
-    })
-    .catch((err) => {
-      console.log(err);
-    });*/
 })
+
 let token;
 
 app.post('/all-blogs', (req, res) => {
   token = req.body.token;
   res.send("GOOD!!").status(200)
+})
+
+app.post('/deleteBlog', (req, res) => {
+  const {name} = req.body;
+
+  UserSession.find({_id: token}, (err, prevUser) => {
+    //find the user using the userSession object
+    User.find({
+
+      _id: prevUser[0].userId
+      
+    }, (err, prevUser) => {
+
+      let userBlogs = prevUser[0].blogs;
+
+      let newUserBlogs = userBlogs.filter(data => {
+        return (data.id != name);
+      })
+
+      let newPrevUser = prevUser[0];
+      //add the new blog to the old ones
+      newPrevUser.blogs = newUserBlogs;
+      //update the user
+      newPrevUser.save();
+
+      res.send({"success": "true", "id": name})
+      
+    });
+  })
+
 })
 
 app.get('/all-blogs', (req, res) => {
@@ -286,11 +286,4 @@ app.get('/all-blogs', (req, res) => {
     });
   })
 
-  /*Blog.find()
-    .then(result => {
-      res.send(result)
-    })
-    .catch((err) => {
-      console.log(err);
-    });*/
 })

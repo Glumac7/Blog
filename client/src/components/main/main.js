@@ -24,6 +24,37 @@ const Main = (props) => {
     }
     else
     {
+        function deleteBlog(event)
+        {
+            const {name} = event.target;
+
+            fetch(`http://localhost:5000/deleteBlog`, 
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({token: token, name: name}),
+                
+            })
+            .then(res => res.json())
+            .then(json => { 
+                let success = json.success; 
+
+                if(success)
+                {
+                    let newCustomers = customers.filter(data => {
+                        // eslint-disable-next-line
+                        return (data.id != json.id)
+                    })
+
+                    setCustomers(newCustomers);
+                }
+            });
+
+        }
+
         function handelSearch(event) {
             const {value} = event.target;
             setFilter(value);
@@ -46,46 +77,53 @@ const Main = (props) => {
                 default:
                     break;
             }
-            console.log(value + " " + name)
         }
 
         function addBlog(e) {
+
             e.preventDefault();
 
-            console.log(token);
-            
-            fetch('http://localhost:5000/blogs', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  title: title,
-                  snippet: snippet,
-                  body: body,
-                  token: token
-                })
-              })
-                .then(res => res.json())
-                .then(json => { 
-                    if(json.success)
-                    {
-                        let oldCustomers = customers;
-                        oldCustomers.push({
-                            title,
-                            snippet,
-                            body,
-                            token
-                        })
-                        console.log(oldCustomers)
-                        setCustomers(oldCustomers)
-                        setTitle('');
-                        setSnippet('');
-                        setBody('');
-                    }
-                });
+            if(body.length < 200)
+            {
+                alert("The body needs to be at least 200 characters long!")
+            }
+            else
+            {
 
-            
+                fetch('http://localhost:5000/blogs', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      title: title,
+                      snippet: snippet,
+                      body: body,
+                      id: Date.now(),
+                      token: token
+                    })
+                  })
+                    .then(res => res.json())
+                    .then(json => { 
+                        if(json.success)
+                        {
+                            let oldCustomers = customers;
+                            oldCustomers.push({
+                                title,
+                                snippet,
+                                id: json.id,
+                                body,
+                                token
+                            })
+                            setCustomers(oldCustomers)
+                            setTitle('');
+                            setSnippet('');
+                            setBody('');
+                        }
+                    });
+    
+            }
+           
         }
     
         const blog = customers.filter(data => {
@@ -101,6 +139,8 @@ const Main = (props) => {
                             <h1>{item.title}</h1>
                             <h5>{item.snippet}</h5>
                             <p>{item.body}</p>
+                            <Button name={item.id} id="x" onClick={deleteBlog} variant="danger">X</Button>
+                            <hr style={{width: "100%", float: "right"}}/>
                             <br/>
                         </div>);
     
