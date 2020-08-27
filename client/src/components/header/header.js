@@ -6,12 +6,13 @@ import { getFromStorage } from '../storage';
 import { Redirect } from 'react-router-dom';
 
 const Header = (props) => {
-    
+
+    const {toMain} = props;
     const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(() => {
 
-        if(getFromStorage('user'))
+        if(toMain === "Logged in" || localStorage.getItem('user'))
         {
             setLoggedIn(true);
         }

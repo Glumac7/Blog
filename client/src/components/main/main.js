@@ -179,13 +179,13 @@ const Main = (props) => {
         return (
             <Container id="main">
                 <Row>
-                    <Col style={{margin: 20, backgroundColor: "#fff"}}> 
+                    <Col sm style={{margin: 20, backgroundColor: "#fff"}}> 
                         <Form.Group>
                             <Form.Label>Search blogs by name</Form.Label>
                             <Form.Control type="text" placeholder="Enter blog name..." onChange={handelSearch}/>
                         </Form.Group>
                     </Col>
-                    <Col style={{margin: 20, backgroundColor: "#fff"}}>
+                    <Col sm style={{margin: 20, backgroundColor: "#fff"}}>
                         <Form onSubmit={addBlog}>
                             <Form.Group>
                                 <Form.Label>Add a blog</Form.Label>

@@ -21,7 +21,7 @@ const App = () => {
     <div className="App">
 
         <Router>
-          <Header/>
+          <Header toMain={toMain}/>
 
           <Switch>
               <Route exact path="/">

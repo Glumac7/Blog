@@ -8,3 +8,10 @@
     width: 55%;
     padding: 30px;
 }
+
+@media (max-width: 766px)
+{
+    #login form{
+        width: 100%;
+    }
+}

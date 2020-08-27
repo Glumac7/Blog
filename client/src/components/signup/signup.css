@@ -8,4 +8,14 @@
     width: 55%;
     padding: 30px;
 }
-/*bootstrap icons*/
+
+@media (max-width: 766px)
+{
+    #signup form{
+        width: 100%;
+    }
+
+    #signup form h1{
+        font-size: 30px;
+    }
+}
